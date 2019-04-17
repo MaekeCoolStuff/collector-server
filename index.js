@@ -1,4 +1,6 @@
-var app = require('./server');
-const port = 3000;
+var config = require('./server/config/config');
+var app = require('./server/server');
+var logger = require('./server/util/logger');
 
-app.listen(port, () => console.log(`Collector Server listening on port ${port}!`));
+app.listen(config.port);
+logger.log('listening on http://localhost:' + config.port);
