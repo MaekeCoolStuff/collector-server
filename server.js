@@ -17,11 +17,10 @@ app.use('/games', gameRouter);
 
 app.use(function(err, req, res, next) {
     if(err) {
+        console.log(err);
         res.status(500).send(err);
     }
 });
-
-const port = 3000;
-
 app.get('/', (req, res) => res.send('Hello World'));
-app.listen(port, () => console.log(`Collector Server listening on port ${port}!`));
+
+module.exports = app;
