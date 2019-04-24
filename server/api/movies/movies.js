@@ -1,6 +1,36 @@
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/collector');
 var movieRouter = require('express').Router();
 var movies = [{ name: 'Movie' }];
 var id = 0;
+
+var MovieSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    watched: {
+        type: Boolean,
+        required: true
+    },
+    watchDate: Date,
+    rating: {
+        type: Number,
+        min: 0,
+        max: 10
+    },
+    summaryFile: Buffer,
+    relatedGames: [],
+    filmLocation: {
+        city: String,
+        country: String
+    },
+    movieGame: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'game'
+    }
+});
 
 var updateId = function(req, res, next) {
     if(!req.body.id) {
@@ -33,8 +63,12 @@ movieRouter.get('/:id', function(req, res) {
 
 movieRouter.post('/', updateId, function(req, res) {
     var movie = req.body;
-
     movies.push(movie);
+
+    var Movie = mongoose.model('movie', MovieSchema);
+    Movie.create(movie).then(function(addedMovie) {
+        res.json(addedMovie || {});
+    });
 });
 
 movieRouter.put('/:id', function(req, res) {
